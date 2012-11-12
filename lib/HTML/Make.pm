@@ -26,6 +26,10 @@ use Carp;
 
 Make a new HTML element of the specified type.
 
+It is possible to add attributes or text to the item.
+
+    my $element = HTML::Make->new ('li', attr => {class => 'biglist'});
+
 =cut
 
 sub new
