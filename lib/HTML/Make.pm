@@ -30,6 +30,10 @@ It is possible to add attributes or text to the item.
 
     my $element = HTML::Make->new ('li', attr => {class => 'biglist'});
 
+Add text:
+
+    my $element = HTML::Make->new ('li', text => "White punks on dope");
+
 =cut
 
 sub new
@@ -104,15 +108,20 @@ sub add_text
 
 =head2 push
 
-    $element->push ($child);
+    my $child = $element->push ('tag');
 
-Add child element C<$child> to C<$element>. For example,
+Add child element of type <tag> to C<$element> and return the result
+as a new C<HTML::Make> object. For example,
 
     my $table = HTML::Make->new ('table');
     my $row = $table->push ('tr');
     my $cell = $row->push ('td');
     print $table->text ();
     # <table><tr><td></td></tr></table>
+
+It's also possible to add the same arguments as L</new>:
+
+    $element->push ('a', attr => {href => 'http://www.example.org/'});
 
 =cut
 
@@ -218,4 +227,11 @@ sub multiply
 }
 
 1;
+
+=head1 COPYRIGHT AND LICENCE
+
+Copyright (c) 2013 Ben Bullock. This Perl module may be used,
+redistributed, modified, and copied under the same terms as Perl
+itself.
+
 
