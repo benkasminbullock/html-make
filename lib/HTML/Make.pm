@@ -170,6 +170,8 @@ wbr 1
 xmp 1
 /;
 
+our $texttype = 'text';
+
 =head1 METHODS
 
 =cut
@@ -197,7 +199,7 @@ sub new
     bless $obj;
     $obj->{type} = $type;
     # User is not allowed to use 'text' type.
-    if ($type eq 'text') {
+    if ($type eq $texttype) {
 	my ($package, undef, undef) = caller ();
 	if ($package ne __PACKAGE__) {
 	    die "Illegal use of text type";
@@ -271,7 +273,7 @@ The text may contain HTML elements:
 sub add_text
 {
     my ($obj, $text) = @_;
-    my $x = __PACKAGE__->new ('text', text => $text);
+    my $x = __PACKAGE__->new ($texttype, text => $text);
     CORE::push @{$obj->{children}}, $x;
     return $x;
 }
@@ -351,7 +353,7 @@ sub text
         croak "No type";
     }
     my $text;
-    if ($type eq 'text') {
+    if ($type eq $texttype) {
         $text = $obj->{text};
     }
     else {
