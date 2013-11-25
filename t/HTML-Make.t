@@ -68,6 +68,12 @@ ok ($@, "dies if text is not a scalar");
     HTML::Make->new ('frog');
     is (@warnings, 1, "one warning issued");
     like ($warnings[0], qr/unknown tag/i, "detect unknown tags");
+    @warnings = ();
+    my $freaky = HTML::Make->new ('freaky', nocheck => 1);
+    is (@warnings, 0, "no warnings issued when nocheck = 1");
+    @warnings = ();
+    my $TABLE = HTML::Make->new ('TABLE');
+    is (@warnings, 0, "no warnings issued for upper-case tags");
 };
 
 {

@@ -22,7 +22,7 @@ This is an HTML generator.
 package HTML::Make;
 use warnings;
 use strict;
-our $VERSION = 0.01;
+our $VERSION = 0.02;
 use Carp;
 
 # Extracted from
@@ -182,13 +182,24 @@ our $texttype = 'text';
 
 Make a new HTML element of the specified type.
 
-It is possible to add attributes or text to the item.
+It is possible to add attributes or text to the item. To add
+attributes, use the following syntax:
 
     my $element = HTML::Make->new ('li', attr => {class => 'biglist'});
 
-Add text:
+To add text,
 
     my $element = HTML::Make->new ('li', text => "White punks on dope");
+
+Both attributes and text may be added:
+
+    my $element = HTML::Make->new ('li', attr => {id => 'ok'}, text => 'OK');
+
+HTML::Make has a list of known HTML tags and will issue a warning if
+the type given as the first argument to new is not on its list of
+tags. To switch off this behaviour, use
+
+    my $freaky = HTML::Make->new ('freaky', nocheck => 1);
 
 =cut
 
@@ -213,7 +224,7 @@ sub new
 	$obj->{text} = $options{text};
     }
     else {
-	if (! $tags{$type}) {
+	if (! $options{nocheck} && ! $tags{lc $type}) {
 	    carp "Unknown tag type '$type'";
 	}
 	if ($options{text}) {
@@ -236,6 +247,10 @@ Add attributes to the specified object, in other words
     $obj->add_attr (class => 'beano');
     my $obj_text = $obj->text ();
     # <li class="beano"></li>
+
+This issues a warning of the form B<"Overwriting attribute 'class' for
+'li'"> if the object already contains an attribute of the specified
+type.
 
 =cut
 
@@ -291,7 +306,8 @@ as a new C<HTML::Make> object. For example,
     print $table->text ();
     # <table><tr><td></td></tr></table>
 
-It's also possible to add the same arguments as L</new>:
+It's also possible to add all of the same arguments as L</new>, for
+example
 
     $element->push ('a', attr => {href => 'http://www.example.org/'});
 
