@@ -49,6 +49,40 @@ like ($text6,
       qr!<li>monkeys</li>.*?<li>dandelions</li>.*?<li>pineapples</li>!sm,
       "Multiply elements");
 
+eval {
+    HTML::Make->new ('text');
+};
+ok ($@, "dies on making a text object");
+eval {
+    HTML::Make->new ('li', text => ['stuff']);
+};
+ok ($@, "dies if text is not a scalar");
+
+# http://perlmaven.com/test-for-warnings-in-a-perl-module
+
+{
+    my @warnings;
+    local $SIG{__WARN__} = sub {
+	push @warnings, @_;
+    };
+    HTML::Make->new ('frog');
+    is (@warnings, 1, "one warning issued");
+    like ($warnings[0], qr/unknown tag/i, "detect unknown tags");
+};
+
+{
+    my @warnings;
+    local $SIG{__WARN__} = sub {
+	push @warnings, @_;
+    };
+    my $tr = HTML::Make->new ('tr', attr => {monkey => 1});
+    $tr->add_attr (monkey => 2);
+    is (@warnings, 1, "one warning issued");
+    like ($warnings[0], qr/overwriting attribute/i,
+	  "detect overwrite attribute");
+};
+
+
 TODO: {
     local $TODO = 'not yet';
 };
