@@ -1,3 +1,5 @@
+=encoding UTF-8
+
 =head1 NAME
 
 HTML::Make - make HTML
@@ -15,7 +17,26 @@ HTML::Make - make HTML
 
 =head1 DESCRIPTION
 
-This is an HTML generator.
+This is an HTML generator. You first of all make a top node using
+L</new>,
+
+    my $top_node = HTML::Make->new ('ul');
+
+then add children to the top node using L</push>:
+
+    my $element = $top_node->push ('li');
+
+You add text to the child element using L</add_text>:
+
+    $element->add_text ('Ça plane pour moi');
+
+You can add attributes to the child element using L</add_attr>:
+
+    $element->add_attr (class => 'plastic bertrand');
+
+When you want to get the HTML as text, you use L</text> on your top node:
+
+    my $html = $top_node->text ();
 
 =cut
 
