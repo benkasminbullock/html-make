@@ -26,11 +26,11 @@ then add children to the top node using L</push>:
 
     my $element = $top_node->push ('li');
 
-You add text to the child element using L</add_text>:
+You add text to elements using L</add_text>:
 
     $element->add_text ('Ça plane pour moi');
 
-You can add attributes to the child element using L</add_attr>:
+You can add attributes to elements using L</add_attr>:
 
     $element->add_attr (class => 'plastic bertrand');
 
@@ -38,13 +38,18 @@ When you want to get the HTML as text, you use L</text> on your top node:
 
     my $html = $top_node->text ();
 
+Other convenience features also exist. See the complete documentation
+for full details.
+
 =cut
 
 package HTML::Make;
 use warnings;
 use strict;
-our $VERSION = 0.02;
+our $VERSION = 0.03;
 use Carp;
+
+# This is a list of valid tags.
 
 # Extracted from
 
@@ -192,6 +197,7 @@ xmp 1
 /;
 
 our $texttype = 'text';
+our $blanktype = 'blank';
 
 =head1 METHODS
 
@@ -218,7 +224,7 @@ Both attributes and text may be added:
 
 HTML::Make has a list of known HTML tags and will issue a warning if
 the type given as the first argument to new is not on its list of
-tags. To switch off this behaviour, use
+tags. To switch off this behaviour, use the C<nocheck> option:
 
     my $freaky = HTML::Make->new ('freaky', nocheck => 1);
 
@@ -229,6 +235,9 @@ sub new
     my ($class, $type, %options) = @_;
     my $obj = {};
     bless $obj;
+    if (! $type) {
+	$type = $blanktype;
+    }
     $obj->{type} = $type;
     # User is not allowed to use 'text' type.
     if ($type eq $texttype) {
@@ -237,7 +246,7 @@ sub new
 	    die "Illegal use of text type";
 	}
 	if (! defined $options{text}) {
-	    die "Text type object with empty text";
+	    croak "Text type object with empty text";
 	}
 	if (ref $options{text}) {
 	    croak "text field must be a scalar";
@@ -245,7 +254,7 @@ sub new
 	$obj->{text} = $options{text};
     }
     else {
-	if (! $options{nocheck} && ! $tags{lc $type}) {
+	if (! $options{nocheck} && $type ne $blanktype && ! $tags{lc $type}) {
 	    carp "Unknown tag type '$type'";
 	}
 	if ($options{text}) {
@@ -394,11 +403,15 @@ sub text
         $text = $obj->{text};
     }
     else {
-        $text = $obj->opening_tag ();
+	if ($type ne $blanktype) {
+	    $text = $obj->opening_tag ();
+	}
         for my $child (@{$obj->{children}}) {
             $text .= $child->text ();
         }
-        $text .= "</$type>\n";
+	if ($type ne $blanktype) {
+	    $text .= "</$type>\n";
+	}
     }
     return $text;
 }

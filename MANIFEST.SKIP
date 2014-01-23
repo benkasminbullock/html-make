@@ -8,3 +8,4 @@
 blib
 # Build files
 MYMETA\.
+^Makefile$

@@ -1,4 +1,8 @@
 #!/home/ben/software/install/bin/perl
+
+# This extracts a list of HTML tags from the Mozilla.org document. See
+# the module source code for the URL of the Mozilla.org document.
+
 use warnings;
 use strict;
 my $infile = 'mozilla.txt';
