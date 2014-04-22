@@ -287,7 +287,7 @@ type.
 sub add_attr
 {
     my ($obj, %attr) = @_;
-    for my $k (keys %attr) {
+    for my $k (sort keys %attr) {
 	if ($obj->{attr}->{$k}) {
 	    carp "Overwriting attribute '$k' for '$obj->{type}' tag";
 	}
@@ -367,7 +367,7 @@ sub opening_tag
     if ($obj->{attr}) {
 	my @attr;
 	my %attr = %{$obj->{attr}};
-	for my $k (keys %attr) {
+	for my $k (sort keys %attr) {
 	    my $v = $attr{$k};
 	    $v =~ s/"/\\"/g;
 	    CORE::push @attr, "$k=\"$v\"";
