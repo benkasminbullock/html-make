@@ -13,12 +13,12 @@ HTML::Make - make HTML
     my $td = $tr->push ('td', text => 'This is your cell.');
     # Add HTML as text.
     $td->add_text ('<a href="http://www.example.org/">Example</a>');
+    # Get the output
     print $table->text ();
 
 =head1 DESCRIPTION
 
-This is an HTML generator. You first of all make a top node using
-L</new>,
+HTML::Make is an HTML generator. Make a top node using L</new>
 
     my $top_node = HTML::Make->new ('ul');
 
@@ -26,20 +26,21 @@ then add children to the top node using L</push>:
 
     my $element = $top_node->push ('li');
 
-You add text to elements using L</add_text>:
+Add text to elements using L</add_text>:
 
     $element->add_text ('Ça plane pour moi');
 
-You can add attributes to elements using L</add_attr>:
+Add attributes to elements using L</add_attr>:
 
     $element->add_attr (class => 'plastic bertrand');
 
-When you want to get the HTML as text, you use L</text> on your top node:
+Get the HTML as text with L</text> on the top node:
 
     my $html = $top_node->text ();
 
-Other convenience features also exist. See the complete documentation
-for full details.
+Add HTML to the element using L</add_text>:
+
+    $element->add_text ("<p>This is a paragraph with <i>italic</i> text.</p>");
 
 =cut
 
@@ -196,6 +197,19 @@ wbr 1
 xmp 1
 /;
 
+my %noCloseTags = (
+	"area" => 1,
+	"br" => 1,
+	"dd" => 1,
+	"dt" => 1,
+	"hr" => 1,
+	"image" => 1,
+	"input" => 1,
+	"img" => 1,
+	"link" => 1,
+	"meta" => 1,
+);
+
 our $texttype = 'text';
 our $blanktype = 'blank';
 
@@ -230,6 +244,10 @@ tags. To switch off this behaviour, use the C<nocheck> option:
 
 =cut
 
+# This is for checking %options for stray stuff.
+
+my %validoptions = (qw/text 1 nocheck 1 attr 1/);
+
 sub new
 {
     my ($class, $type, %options) = @_;
@@ -262,6 +280,11 @@ sub new
         }
 	if ($options{attr}) {
 	    $obj->add_attr (%{$options{attr}});
+	}
+	for my $k (keys %options) {
+	    if (! $validoptions{$k}) {
+		carp "Unknown option '$k'";
+	    }
 	}
     }
     return $obj;
@@ -312,6 +335,8 @@ The text may contain HTML elements:
     $element->add_text ('peanuts <i>eggs</i>');
     print $element->text ();
     # <p>peanuts <i>eggs</i></p>
+
+The return value is the added text object.
 
 =cut
 
@@ -409,7 +434,7 @@ sub text
         for my $child (@{$obj->{children}}) {
             $text .= $child->text ();
         }
-	if ($type ne $blanktype) {
+	if ($type ne $blanktype && ! $noCloseTags{$type}) {
 	    $text .= "</$type>\n";
 	}
     }
@@ -452,9 +477,29 @@ sub multiply
 
 1;
 
+=head1 DETAILS
+
+=head2 White space
+
+Document the addition of whitespace. Seems to be adding "\n" after a
+closing tag. Bugzilla 1834 (?)
+
+=head1 SEE ALSO
+
+=over
+
+=item L<HTML::TagTree>
+
+=item http://cleancode.sourceforge.net/api/perl/HTML/Generator.html
+
+=item L<HTML::Template>
+
+=back
+
+
 =head1 COPYRIGHT AND LICENCE
 
-Copyright (c) 2013 Ben Bullock. This Perl module may be used,
+Copyright (c) 2013-2015 Ben Bullock. This Perl module may be used,
 redistributed, modified, and copied under the same terms as Perl
 itself.
 
