@@ -22,13 +22,13 @@ $html3->add_text ('person');
 my $text3 = $html3->text ();
 like ($text3, qr!<p>person</p>!, "Add text to element");
 
-my $html4 = HTML::Make->new ('div', attr => {chunky => 'monkey'});
+my $html4 = HTML::Make->new ('div', attr => {id => 'monkey'});
 $html4->add_text ('boo');
 my $p = $html4->push ('b');
 $p->add_text ('bloody');
 $html4->add_text ('hoo');
 my $text4 = $html4->text ();
-like ($text4, qr!<div chunky=\"monkey\">boo<b>bloody</b>\s*hoo</div>!,
+like ($text4, qr!<div id=\"monkey\">boo<b>bloody</b>\s*hoo</div>!,
     "Nested text and tags");
 
 my $html5 = HTML::Make->new ('table');
@@ -79,15 +79,26 @@ ok ($@, "dies if text is not a scalar");
 {
     my @warnings;
     local $SIG{__WARN__} = sub {
+	#	note (@_);
 	push @warnings, @_;
     };
-    my $tr = HTML::Make->new ('tr', attr => {monkey => 1});
-    $tr->add_attr (monkey => 2);
+    my $tr = HTML::Make->new ('tr', attr => {onmouseover => 1});
+    $tr->add_attr (onmouseover => 2);
     is (@warnings, 1, "one warning issued");
     like ($warnings[0], qr/overwriting attribute/i,
 	  "detect overwrite attribute");
 };
 
+{
+    my @warnings;
+    local $SIG{__WARN__} = sub {
+	push @warnings, @_;
+    };
+    my $table = HTML::Make->new ('table', attr => {cellspacing => 2});
+    is (@warnings, 1, "got warning with bad attribute cellspacing on table");
+    like ($warnings[0], qr/cellspacing is not allowed for <table>/,
+	  "got correct warning for cellspacing on table");
+};
 
 TODO: {
     local $TODO = 'not yet';

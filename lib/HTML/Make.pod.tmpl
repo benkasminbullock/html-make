@@ -1,0 +1,171 @@
+[% start_year=2012 %]
+=encoding UTF-8
+
+=head1 NAME
+
+HTML::Make - make HTML
+
+=head1 SYNOPSIS
+
+    # Make a table.
+    use HTML::Make;
+    my $table = HTML::Make->new ('table');
+    my $tr = $table->push ('tr');
+    my $td = $tr->push ('td', text => 'This is your cell.');
+    # Add HTML as text.
+    $td->add_text ('<a href="http://www.example.org/">Example</a>');
+    # Get the output
+    print $table->text ();
+
+=head1 DESCRIPTION
+
+HTML::Make is an HTML generator. Make a top node using L</new>
+
+    my $top_node = HTML::Make->new ('ul');
+
+then add children to the top node using L</push>:
+
+    my $element = $top_node->push ('li');
+
+Add text to elements using L</add_text>:
+
+    $element->add_text ('Ça plane pour moi');
+
+Add attributes to elements using L</add_attr>:
+
+    $element->add_attr (class => 'plastic bertrand');
+
+Get the HTML as text with L</text> on the top node:
+
+    my $html = $top_node->text ();
+
+Add HTML to the element using L</add_text>:
+
+    $element->add_text ("<p>This is a paragraph with <i>italic</i> text.</p>");
+
+=head1 METHODS
+
+=head2 new
+
+    my $element = HTML::Make->new ('li');
+
+Make a new HTML element of the specified type.
+
+It is possible to add attributes or text to the item. To add
+attributes, use the following syntax:
+
+    my $element = HTML::Make->new ('li', attr => {class => 'biglist'});
+
+To add text,
+
+    my $element = HTML::Make->new ('li', text => "White punks on dope");
+
+Both attributes and text may be added:
+
+    my $element = HTML::Make->new ('li', attr => {id => 'ok'}, text => 'OK');
+
+HTML::Make has a list of known HTML tags and will issue a warning if
+the type given as the first argument to new is not on its list of
+tags. To switch off this behaviour, use the C<nocheck> option:
+
+    my $freaky = HTML::Make->new ('freaky', nocheck => 1);
+
+=head2 add_attr
+
+    $obj->add_attr (class => 'buggles');
+
+Add attributes to the specified object, in other words
+
+    my $obj = HTML::Make->new ('li');
+    $obj->add_attr (class => 'beano');
+    my $obj_text = $obj->text ();
+    # <li class="beano"></li>
+
+This issues a warning of the form B<"Overwriting attribute 'class' for
+'li'"> if the object already contains an attribute of the specified
+type.
+
+=head2 add_text
+
+    $element->add_text ('buggles');
+
+Add text to C<$element>. For example,
+
+    my $element = HTML::Make->new ('p');
+    $element->add_text ('peanuts');
+    print $element->text ();
+    # <p>peanuts</p>
+
+The text may contain HTML elements:
+
+    my $element = HTML::Make->new ('p');
+    $element->add_text ('peanuts <i>eggs</i>');
+    print $element->text ();
+    # <p>peanuts <i>eggs</i></p>
+
+The return value is the added text object.
+
+=head2 push
+
+    my $child = $element->push ('tag');
+
+Add child element of type <tag> to C<$element> and return the result
+as a new C<HTML::Make> object. For example,
+
+    my $table = HTML::Make->new ('table');
+    my $row = $table->push ('tr');
+    my $cell = $row->push ('td');
+    print $table->text ();
+    # <table><tr><td></td></tr></table>
+
+It's also possible to add all of the same arguments as L</new>, for
+example
+
+    $element->push ('a', attr => {href => 'http://www.example.org/'});
+
+This warns if you add some types of elements to possibly inappropriate
+parent elements. For example if you add an <li> tag to a <tr> or
+something.
+
+=head2 opening_tag
+
+    my $tag = $obj->opening_tag ();
+
+Returns the text value of the HTML tag opening, complete with
+attributes.
+
+=head2 text
+
+    $element->text ();
+
+This function returns the element as text.
+
+    my $p = HTML::Make->new ('p');
+    print $p->text ();
+    # <p></p>
+
+=head2 multiply
+
+    my @elements = $obj->multiply ('li', \@contents);
+
+Create multiple child elements of C<$obj> of type given by the first
+argument, with text contents given by C<\@contents>.
+
+    my $ol = HTML::Make->new ('ol');
+    $ol->multiply ('li', ['one', 'two', 'three']);
+    print $ol->text ();
+    # <ol><li>one</li>\n<li>two</li>\n<li>three</li>\n</ol>
+
+=head1 SEE ALSO
+
+=over
+
+=item L<HTML::TagTree>
+
+=item http://cleancode.sourceforge.net/api/perl/HTML/Generator.html
+
+=item L<HTML::Template>
+
+=back
+
+[% INCLUDE "author" %]
