@@ -64,9 +64,10 @@ Both attributes and text may be added:
 
     my $element = HTML::Make->new ('li', attr => {id => 'ok'}, text => 'OK');
 
-HTML::Make has a list of known HTML tags and will issue a warning if
-the type given as the first argument to new is not on its list of
-tags. To switch off this behaviour, use the C<nocheck> option:
+HTML::Make uses the list of known HTML tags from
+L</HTML::Valid::Tagset>, and will issue a warning if the type given as
+the first argument to L</new> is not on its list of tags. To switch
+off this behaviour, use the C<nocheck> option:
 
     my $freaky = HTML::Make->new ('freaky', nocheck => 1);
 
@@ -84,6 +85,10 @@ Add attributes to the specified object, in other words
 This issues a warning of the form B<"Overwriting attribute 'class' for
 'li'"> if the object already contains an attribute of the specified
 type.
+
+This issues a warning if the attribute is not valid for the tag,
+according to the C<tag_attr_ok> method of
+L</HTML::Valid::Tagset>. This is restricted to what is valid in HTML5.
 
 =head2 add_text
 
@@ -155,6 +160,28 @@ argument, with text contents given by C<\@contents>.
     $ol->multiply ('li', ['one', 'two', 'three']);
     print $ol->text ();
     # <ol><li>one</li>\n<li>two</li>\n<li>three</li>\n</ol>
+
+=head1 BUGS
+
+This module assumes you want to make HTML5.
+
+There is no way to control the whitespace in the output HTML.
+
+=head1 DEPENDENCIES
+
+This module depends on the following Perl modules.
+
+=over
+
+=item Carp
+
+L<Carp> is used to report errors.
+
+=item HTML::Valid::Tagset
+
+L<HTML::Valid::Tagset> is used to validate tags and tag/attribute pairs.
+
+=back
 
 =head1 SEE ALSO
 

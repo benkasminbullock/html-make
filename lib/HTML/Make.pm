@@ -9,7 +9,8 @@ use HTML::Valid::Tagset ':all';
 
 my %tags = %HTML::Valid::Tagset::isKnown;
 
-# Up to version 0.04 the following list was used.
+# Up to version 0.04 the following list was used. This will probably
+# be removed in later versions of this module.
 
 # Extracted from
 
