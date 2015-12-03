@@ -9,3 +9,7 @@ blib
 # Build files
 MYMETA\.
 ^Makefile$
+# Template for POD doesn't need to go to CPAN
+^lib/HTML/Make\.pod\.tmpl$
+# Author tests don't need to go to CPAN.
+^xt/.*$
