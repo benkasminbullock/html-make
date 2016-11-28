@@ -1,3 +1,7 @@
+0.06 2016-11-28
+
+* Improved examples and documentation
+
 0.05 2015-12-02
 
 * Use HTML::Valid::Tagset for checking tags and attributes

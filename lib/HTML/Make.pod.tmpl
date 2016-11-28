@@ -3,27 +3,29 @@
 
 =head1 NAME
 
-HTML::Make - make HTML
+HTML::Make - A flexible HTML generator
 
 =head1 SYNOPSIS
 
-    # Make a table.
-    use HTML::Make;
-    my $table = HTML::Make->new ('table');
-    my $tr = $table->push ('tr');
-    my $td = $tr->push ('td', text => 'This is your cell.');
-    # Add HTML as text.
-    $td->add_text ('<a href="http://www.example.org/">Example</a>');
-    # Get the output
-    print $table->text ();
+[% INCLUDE "synopsis.pl" | xtidy %]
+
+outputs
+
+[% INCLUDE "synopsis-out.txt" | xtidy %]
+
+=head1 VERSION
+
+This documents HTML::Make version [% version %] corresponding to git
+commit L<[% commit.commit %]|[% repo %]/commit/[% commit.commit %]>
+released on [% commit.date %].
 
 =head1 DESCRIPTION
 
-HTML::Make is an HTML generator. Make a top node using L</new>
+An HTML generator. Make a top node using L</new>
 
     my $top_node = HTML::Make->new ('ul');
 
-then add children to the top node using L</push>:
+then add child elements to the top node using L</push>:
 
     my $element = $top_node->push ('li');
 
@@ -39,7 +41,7 @@ Get the HTML as text with L</text> on the top node:
 
     my $html = $top_node->text ();
 
-Add HTML to the element using L</add_text>:
+Add HTML to an element using L</add_text>:
 
     $element->add_text ("<p>This is a paragraph with <i>italic</i> text.</p>");
 
@@ -156,16 +158,20 @@ This function returns the element as text.
 Create multiple child elements of C<$obj> of type given by the first
 argument, with text contents given by C<\@contents>.
 
-    my $ol = HTML::Make->new ('ol');
-    $ol->multiply ('li', ['one', 'two', 'three']);
-    print $ol->text ();
-    # <ol><li>one</li>\n<li>two</li>\n<li>three</li>\n</ol>
+[% INCLUDE "multiply.pl" | xtidy %]
+
+outputs
+
+[% INCLUDE "multiply-out.txt" | xtidy %]
 
 =head1 BUGS
 
 This module assumes you want to make HTML5.
 
 There is no way to control the whitespace in the output HTML.
+
+There is no way to add HTML comments to the output except by adding
+them as text.
 
 =head1 DEPENDENCIES
 
@@ -187,14 +193,28 @@ L<HTML::Valid::Tagset> is used to validate tags and tag/attribute pairs.
 
 =over
 
-=item L<HTML::TagTree>
+=item L<CGI>
 
-=item L<HTML::Template>
+The CGI module contains HTML generation, although it is "deprecated".
+Unfortunately very much more effort has gone into telling you about
+why you should not use CGI's HTML generation than has gone into
+suggesting what you should use instead.
 
 =item L<HTML::Generator|http://cleancode.sourceforge.net/api/perl/HTML/Generator.html>
 
 This project is on the SourceForge site, not CPAN. I have not tested
 it.
+
+=item L<HTML::Native>
+
+=item L<HTML::TagTree>
+
+=item L<HTML::Template>
+
+=item L<HTML::Tiny>
+
+This is similar to the HTML generation which is in L<CGI>. Its last
+update, version 1.05, was in 2009, and it doesn't include HTML5 tags.
 
 =back
 

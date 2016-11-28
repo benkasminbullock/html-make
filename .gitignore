@@ -4,3 +4,5 @@ Makefile
 README
 #
 mozilla.txt
+examples/*-out.txt
+lib/HTML/Make.pod
