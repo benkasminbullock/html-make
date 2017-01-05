@@ -6,3 +6,5 @@ README
 mozilla.txt
 examples/*-out.txt
 lib/HTML/Make.pod
+MANIFEST
+HTML-Make-[0-9]*
