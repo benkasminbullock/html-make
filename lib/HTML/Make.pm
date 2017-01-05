@@ -1,7 +1,7 @@
 package HTML::Make;
 use warnings;
 use strict;
-our $VERSION = '0.07';
+our $VERSION = '0.08';
 use Carp;
 use HTML::Valid::Tagset ':all';
 
@@ -171,7 +171,7 @@ sub text
     else {
 	if ($type ne $blanktype) {
 	    $text = $obj->opening_tag ();
-	    if ($isBlock{$type}) {
+	    if ($isBlock{$type} || $type eq 'tr') {
 		$text .= "\n";
 	    }
 	}

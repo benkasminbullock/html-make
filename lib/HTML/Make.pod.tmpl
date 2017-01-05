@@ -18,7 +18,7 @@ As HTML, this looks like
 =end HTML
 
 (This example is included as L<F<[% pl
-%]>|https://api.metacpan.org/source/BKB/C-Tokenize-[% info.version
+%]>|https://api.metacpan.org/source/BKB/HTML-Make-[% info.version
 %]/examples/[% pl %]> in the distribution.)  
 [%- END -%]
 
@@ -42,9 +42,8 @@ released on [% commit.date %].
 
 =head1 DESCRIPTION
 
-HTML::Make is an HTML generator. It was designed for generating HTML
-fragments rather than complete pages. A typical use would be for
-automating generation of a list or table within an HTML document.
+HTML::Make is an HTML generator. It generates HTML fragments, such as
+HTML lists or tables, rather than complete HTML pages.
 
 =head1 METHODS
 
@@ -54,8 +53,7 @@ automating generation of a list or table within an HTML document.
 
 Make a new HTML element of the specified type.
 
-It is possible to add attributes or text to the item. To add
-attributes, use the following syntax:
+To add attributes to the element, use
 
     my $element = HTML::Make->new ('li', attr => {class => 'biglist'});
 
@@ -67,29 +65,29 @@ Both attributes and text may be added:
 
     my $element = HTML::Make->new ('li', attr => {id => 'ok'}, text => 'OK');
 
-HTML::Make uses the list of known HTML tags from
-L</HTML::Valid::Tagset>, and will issue a warning if the type given as
-the first argument to L</new> is not on its list of tags. To switch
-off this behaviour, use the C<nocheck> option:
+HTML::Make checks the element against a list of known HTML tags from
+L</HTML::Valid::Tagset>, and warns if the first argument is not on
+this list. To switch off this behaviour and allow arbitrary tags, use
+the C<nocheck> option:
 
-    my $freaky = HTML::Make->new ('freaky', nocheck => 1);
+[% example("nocheck") %]
 
 =head2 add_attr
 
     $obj->add_attr (class => 'buggles');
 
-Add attributes to the specified object, in other words
+Add attributes to C<$obj>. The following adds a class "beano" to the
+"li" element:
 
-    my $obj = HTML::Make->new ('li');
-    $obj->add_attr (class => 'beano');
-    my $obj_text = $obj->text ();
-    # <li class="beano"></li>
+[% example("li-class-beano") %]
 
 This issues a warning of the form B<"Overwriting attribute 'class' for
-'li'"> if the object already contains an attribute of the specified
+'p'"> if the object already contains an attribute of the specified
 type.
 
-This issues a warning if the attribute is not valid for the tag,
+[% example("p-double-class") %]
+
+This also issues a warning if the attribute is not valid for the tag,
 according to L<HTML::Valid::Tagset/tag_attr_ok>. This is restricted to
 what is valid in HTML5.
 
@@ -126,14 +124,19 @@ An object created with HTML::Make may also be pushed:
 
 [% example('push-new') %]
 
+See also L<Make a list of colours with
+HTML::Make|https://www.lemoda.net/perl/colour-list/index.html>.
+
 It's also possible to add all of the same arguments as L</new>, for
 example
 
     $element->push ('a', attr => {href => 'http://www.example.org/'});
 
 This warns if you add some types of elements to possibly inappropriate
-parent elements. For example if you add an <li> tag to a <tr> or
-something.
+parent elements. For example if you add an <li> tag to a <tr> it
+reacts like this:
+
+[% example("push-li-to-tr") %]
 
 =head2 opening_tag
 
@@ -146,18 +149,16 @@ attributes.
 
     $element->text ();
 
-This function returns the element as text.
-
-    my $p = HTML::Make->new ('p');
-    print $p->text ();
-    # <p></p>
+This returns the element and its child elements as text.
 
 =head2 multiply
 
     my @elements = $obj->multiply ('li', \@contents);
 
-Create multiple child elements of C<$obj> of type given by the first
-argument, with text contents given by C<\@contents>.
+Given an HTML tag type as the first argument, and an array reference
+as the second argument, this adds multiple child elements to C<$obj>
+of type given by the first argument, with text contents given by
+C<\@contents>.
 
 [% example ("multiply") %]
 
@@ -168,6 +169,9 @@ argument, with text contents given by C<\@contents>.
 This script converts arbitrary JSON to HTML:
 
 [% example("json-to-html") %]
+
+See also L<Convert JSON to HTML with JSON::Parse and
+HTML::Make|https://www.lemoda.net/perl/json-to-html/index.html>.
 
 =head1 BUGS
 

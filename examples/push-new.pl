@@ -24,7 +24,3 @@ while (@colours) {
     $ul->push ($li);
 }
 print $ul->text ();
-
-# Inspired by
-# https://www.amazon.co.jp/gp/product/B001D7WIFY/
-# http://irocore.com/read-list/
