@@ -1,4 +1,29 @@
-[% start_year=2012 %]
+[%- MACRO example(file) BLOCK %]
+[%- pl =  file _ ".pl" -%]
+[%- out = file _ "-out.txt" -%]
+[% INCLUDE $pl | xtidy %]
+
+produces output
+
+[% INCLUDE $out | xtidy %]
+
+=begin HTML
+
+<p>
+As HTML, this looks like
+</p>
+
+[% INCLUDE $out %]
+
+=end HTML
+
+(This example is included as L<F<[% pl
+%]>|https://api.metacpan.org/source/BKB/C-Tokenize-[% info.version
+%]/examples/[% pl %]> in the distribution.)  
+[%- END -%]
+
+[%- start_year=2012 -%]
+
 =encoding UTF-8
 
 =head1 NAME
@@ -7,43 +32,19 @@ HTML::Make - A flexible HTML generator
 
 =head1 SYNOPSIS
 
-[% INCLUDE "synopsis.pl" | xtidy %]
-
-outputs
-
-[% INCLUDE "synopsis-out.txt" | xtidy %]
+[% example("synopsis") %]
 
 =head1 VERSION
 
-This documents HTML::Make version [% version %] corresponding to git
-commit L<[% commit.commit %]|[% repo %]/commit/[% commit.commit %]>
+This documents HTML::Make version [% info.version %] corresponding to git
+commit L<[% commit.commit %]|[% info.repo %]/commit/[% commit.commit %]>
 released on [% commit.date %].
 
 =head1 DESCRIPTION
 
-An HTML generator. Make a top node using L</new>
-
-    my $top_node = HTML::Make->new ('ul');
-
-then add child elements to the top node using L</push>:
-
-    my $element = $top_node->push ('li');
-
-Add text to elements using L</add_text>:
-
-    $element->add_text ('Ça plane pour moi');
-
-Add attributes to elements using L</add_attr>:
-
-    $element->add_attr (class => 'plastic bertrand');
-
-Get the HTML as text with L</text> on the top node:
-
-    my $html = $top_node->text ();
-
-Add HTML to an element using L</add_text>:
-
-    $element->add_text ("<p>This is a paragraph with <i>italic</i> text.</p>");
+HTML::Make is an HTML generator. It was designed for generating HTML
+fragments rather than complete pages. A typical use would be for
+automating generation of a list or table within an HTML document.
 
 =head1 METHODS
 
@@ -89,8 +90,8 @@ This issues a warning of the form B<"Overwriting attribute 'class' for
 type.
 
 This issues a warning if the attribute is not valid for the tag,
-according to the C<tag_attr_ok> method of
-L</HTML::Valid::Tagset>. This is restricted to what is valid in HTML5.
+according to L<HTML::Valid::Tagset/tag_attr_ok>. This is restricted to
+what is valid in HTML5.
 
 =head2 add_text
 
@@ -119,11 +120,11 @@ The return value is the added text object.
 Add child element of type <tag> to C<$element> and return the result
 as a new C<HTML::Make> object. For example,
 
-    my $table = HTML::Make->new ('table');
-    my $row = $table->push ('tr');
-    my $cell = $row->push ('td');
-    print $table->text ();
-    # <table><tr><td></td></tr></table>
+[% example("table") %]
+
+An object created with HTML::Make may also be pushed:
+
+[% example('push-new') %]
 
 It's also possible to add all of the same arguments as L</new>, for
 example
@@ -158,11 +159,15 @@ This function returns the element as text.
 Create multiple child elements of C<$obj> of type given by the first
 argument, with text contents given by C<\@contents>.
 
-[% INCLUDE "multiply.pl" | xtidy %]
+[% example ("multiply") %]
 
-outputs
+=head1 EXTENDED EXAMPLES
 
-[% INCLUDE "multiply-out.txt" | xtidy %]
+=head2 JSON to HTML
+
+This script converts arbitrary JSON to HTML:
+
+[% example("json-to-html") %]
 
 =head1 BUGS
 
@@ -195,26 +200,32 @@ L<HTML::Valid::Tagset> is used to validate tags and tag/attribute pairs.
 
 =item L<CGI>
 
-The CGI module contains HTML generation, although it is "deprecated".
-Unfortunately very much more effort has gone into telling you about
-why you should not use CGI's HTML generation than has gone into
-suggesting what you should use instead.
+The CGI module contains HTML generation.
 
 =item L<HTML::Generator|http://cleancode.sourceforge.net/api/perl/HTML/Generator.html>
 
-This project is on the SourceForge site, not CPAN. I have not tested
-it.
+This project is on the SourceForge site, not CPAN.
 
 =item L<HTML::Native>
 
+Generate and manipulate HTML as native Perl data structures
+
 =item L<HTML::TagTree>
 
+An HTML generator via a tree of 'tag' objects
+
 =item L<HTML::Template>
+
+HTML-like templating language
 
 =item L<HTML::Tiny>
 
 This is similar to the HTML generation which is in L<CGI>. Its last
 update, version 1.05, was in 2009, and it doesn't include HTML5 tags.
+
+=item L<HTML::FromArrayref>
+
+Output HTML described by a Perl data structure
 
 =back
 

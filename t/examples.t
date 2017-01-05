@@ -14,15 +14,15 @@ is ($obj_text, "<li class=\"beano\"></li>\n");
 my $element = HTML::Make->new ('p');
 $element->add_text ('peanuts');
 my $text = $element->text ();
-like ($text, qr!<p>peanuts</p>!);
+like ($text, qr!<p>\s*peanuts\s*</p>!);
 
 my $p = HTML::Make->new ('p');
 my $p_text = $p->text ();
-like ($p_text, qr!<p></p>!);
+like ($p_text, qr!<p>\s*</p>!);
 
 my $ol = HTML::Make->new ('ol');
 $ol->multiply ('li', ['one', 'two', 'three']);
 my $ol_text =  $ol->text ();
-like ($ol_text, qr!<ol><li>one</li>\s<li>two</li>\s<li>three</li>\s</ol>!);
+like ($ol_text, qr!<ol>\s*<li>\s*one</li>\s*<li>two</li>\s*<li>three</li>\s*</ol>!);
 
 done_testing ();

@@ -20,7 +20,7 @@ like ($text2, qr!<p id="buggles">!, "Use attribute");
 my $html3 = HTML::Make->new ('p');
 $html3->add_text ('person');
 my $text3 = $html3->text ();
-like ($text3, qr!<p>person</p>!, "Add text to element");
+like ($text3, qr!<p>\s*person\s*</p>!, "Add text to element");
 
 my $html4 = HTML::Make->new ('div', attr => {id => 'monkey'});
 $html4->add_text ('boo');
@@ -28,7 +28,7 @@ my $p = $html4->push ('b');
 $p->add_text ('bloody');
 $html4->add_text ('hoo');
 my $text4 = $html4->text ();
-like ($text4, qr!<div id=\"monkey\">boo<b>bloody</b>\s*hoo</div>!,
+like ($text4, qr!<div id=\"monkey\">\s*boo<b>bloody</b>\s*hoo\s*</div>!,
     "Nested text and tags");
 
 my $html5 = HTML::Make->new ('table');

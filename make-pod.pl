@@ -24,7 +24,6 @@ my %inputs = (
 base => $base,
 );
 my $info = get_info (%inputs);
-my $version = $info->{version};
 my $commit = get_commit (%inputs);
 
 # Names of the input and output files containing the documentation.
@@ -37,8 +36,7 @@ my @inputs = (
 
 my %vars;
 
-$vars{version} = $version;
-$vars{repo} = $info->{repo};
+$vars{info} = $info;
 $vars{commit} = $commit;
 
 my $tt = Template->new (
