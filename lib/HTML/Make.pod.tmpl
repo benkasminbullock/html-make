@@ -8,7 +8,7 @@ produces output
 [% INCLUDE $out | xtidy %]
 
 (This example is included as L<F<[% pl
-%]>|https://api.metacpan.org/source/BKB/HTML-Make-[% info.version
+%]>|https://fastapi.metacpan.org/source/BKB/HTML-Make-[% info.version
 %]/examples/[% pl %]> in the distribution.)  
 [%- END -%]
 
@@ -194,7 +194,8 @@ L<HTML::Valid::Tagset> is used to validate tags and tag/attribute pairs.
 
 =item L<CGI>
 
-The CGI module contains HTML generation.
+The CGI module contains HTML generation. See also
+L</CGI::HTML::Functions>.
 
 =item L<HTML::Generator|http://cleancode.sourceforge.net/api/perl/HTML/Generator.html>
 
@@ -210,7 +211,7 @@ An HTML generator via a tree of 'tag' objects
 
 =item L<HTML::Template>
 
-HTML-like templating language
+An HTML-like templating language.
 
 =item L<HTML::Tiny>
 
@@ -220,6 +221,12 @@ update, version 1.05, was in 2009, and it doesn't include HTML5 tags.
 =item L<HTML::FromArrayref>
 
 Output HTML described by a Perl data structure
+
+=item L<HTML::Declare>
+
+An HTML mini-language.
+
+=item L<HTML::Untidy>
 
 =back
 
