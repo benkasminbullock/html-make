@@ -100,6 +100,17 @@ ok ($@, "dies if text is not a scalar");
 	  "got correct warning for cellspacing on table");
 };
 
+{
+    my @warnings;
+    local $SIG{__WARN__} = sub {
+	push @warnings, @_;
+    };
+    my $ul = HTML::Make->new ('ul');
+    my $td = $ul->push ('td');
+    is (@warnings, 1, "got warning with pushing <td> to non-tr");
+    like ($warnings[0], qr/Pushing <td> to a non-tr element/);
+};
+
 TODO: {
     local $TODO = 'not yet';
 };
