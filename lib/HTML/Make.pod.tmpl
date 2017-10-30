@@ -152,6 +152,24 @@ C<\@contents>.
 
 [% example ("multiply") %]
 
+=head1 OUTPUT FORMAT
+
+This section discusses the way that HTML is output by the module.
+
+=head2 Whitespace
+
+=over
+
+=item Indentation
+
+The output HTML is not indented.
+
+=item New lines
+
+New lines are added after block-level elements, according to L<HTML::Valid::Tagset/%isBlock>, and after <tr> elements.
+
+=back
+
 =head1 EXTENDED EXAMPLES
 
 =head2 JSON to HTML
