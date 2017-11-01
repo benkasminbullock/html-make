@@ -111,6 +111,13 @@ ok ($@, "dies if text is not a scalar");
     like ($warnings[0], qr/Pushing <td> to a non-tr element/);
 };
 
+# Check that there is no closing tag for the input tag, bugzilla bug
+# 2015.
+
+my $input = HTML::Make->new ('input');
+my $inputtext = $input->text ();
+unlike ($inputtext, qr!</input>!, "No closing tag for <input>");
+
 TODO: {
     local $TODO = 'not yet';
 };
