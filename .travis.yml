@@ -11,6 +11,7 @@ before_install:
   - cpanm Table::Readable
   - cpanm Template
   - cpanm Test::Pod
+  - cpanm HTML::Valid
   - perl build.pl
 perl:
 # Some versions don't seem to be available.
