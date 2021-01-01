@@ -3,6 +3,7 @@ use warnings;
 use strict;
 use Template;
 use FindBin '$Bin';
+use lib "$Bin/copied/lib";
 use Perl::Build;
 use Perl::Build::Pod ':all';
 use Deploy qw/do_system older/;
