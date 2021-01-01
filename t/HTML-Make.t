@@ -118,6 +118,13 @@ my $input = HTML::Make->new ('input');
 my $inputtext = $input->text ();
 unlike ($inputtext, qr!</input>!, "No closing tag for <input>");
 
+my $el = HTML::Make->new ('ul');
+my $li = $el->push ('li', text => 'item');
+$li->add_comment ("Too much monkey business!");
+my $text = $el->text ();
+ok (index ($text, '<li>item<!-- Too much monkey business! --></li>') != -1,
+    "Comment added OK");
+
 TODO: {
     local $TODO = 'not yet';
 };

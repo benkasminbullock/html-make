@@ -11,7 +11,27 @@ produces output
 %]>|https://fastapi.metacpan.org/source/BKB/HTML-Make-[% info.version
 %]/examples/[% pl %]> in the distribution.)  
 [%- END -%]
+[%- MACRO hexample(file) BLOCK %]
+[%- pl =  file _ ".pl" -%]
+[%- out = file _ "-out.txt" -%]
+[% INCLUDE $pl | xtidy %]
 
+produces output
+
+[% INCLUDE $out | xtidy %]
+
+=begin html
+
+<p>As HTML this looks like this:</p>
+
+[% INCLUDE $out %]
+
+=end html
+
+(This example is included as L<F<[% pl
+%]>|https://fastapi.metacpan.org/source/BKB/HTML-Make-[% info.version
+%]/examples/[% pl %]> in the distribution.)  
+[%- END -%]
 [%- start_year=2012 -%]
 
 =encoding UTF-8
@@ -22,7 +42,7 @@ HTML::Make - A flexible HTML generator
 
 =head1 SYNOPSIS
 
-[% example("synopsis") %]
+[% hexample("synopsis") %]
 
 =head1 VERSION
 
@@ -36,6 +56,62 @@ HTML::Make is an HTML generator. It generates HTML fragments, such as
 HTML lists or tables, rather than complete HTML pages.
 
 =head1 METHODS
+
+=head2 add_attr
+
+    $obj->add_attr (class => 'buggles');
+
+Add attributes to C<$obj>. The following adds a class "beano" to the
+"li" element:
+
+[% example("li-class-beano") %]
+
+This issues a warning of the form B<"Overwriting attribute 'class' for
+'p'"> if the object already contains an attribute of the specified
+type.
+
+[% example("p-double-class") %]
+
+This also issues a warning if the attribute is not valid for the tag,
+according to L<HTML::Valid::Tagset/tag_attr_ok>. This is restricted to
+what is valid in HTML5.
+
+=head2 add_comment
+
+    $element->add_comment ('This should be fixed!');
+
+Add an HTML comment to the element.
+
+=head2 add_text
+
+    $element->add_text ('buggles');
+
+Add text to C<$element>. For example,
+
+    my $element = HTML::Make->new ('p');
+    $element->add_text ('peanuts');
+    print $element->text ();
+    # <p>peanuts</p>
+
+The text may contain HTML elements:
+
+    my $element = HTML::Make->new ('p');
+    $element->add_text ('peanuts <i>eggs</i>');
+    print $element->text ();
+    # <p>peanuts <i>eggs</i></p>
+
+The return value is the added text object.
+
+=head2 multiply
+
+    my @elements = $obj->multiply ('li', \@contents);
+
+Given an HTML tag type as the first argument, and an array reference
+as the second argument, this adds multiple child elements to C<$obj>
+of type given by the first argument, with text contents given by
+C<\@contents>.
+
+[% hexample ("multiply") %]
 
 =head2 new
 
@@ -62,44 +138,13 @@ the C<nocheck> option:
 
 [% example("nocheck") %]
 
-=head2 add_attr
+=head2 opening_tag
 
-    $obj->add_attr (class => 'buggles');
+    my $tag = $obj->opening_tag ();
 
-Add attributes to C<$obj>. The following adds a class "beano" to the
-"li" element:
-
-[% example("li-class-beano") %]
-
-This issues a warning of the form B<"Overwriting attribute 'class' for
-'p'"> if the object already contains an attribute of the specified
-type.
-
-[% example("p-double-class") %]
-
-This also issues a warning if the attribute is not valid for the tag,
-according to L<HTML::Valid::Tagset/tag_attr_ok>. This is restricted to
-what is valid in HTML5.
-
-=head2 add_text
-
-    $element->add_text ('buggles');
-
-Add text to C<$element>. For example,
-
-    my $element = HTML::Make->new ('p');
-    $element->add_text ('peanuts');
-    print $element->text ();
-    # <p>peanuts</p>
-
-The text may contain HTML elements:
-
-    my $element = HTML::Make->new ('p');
-    $element->add_text ('peanuts <i>eggs</i>');
-    print $element->text ();
-    # <p>peanuts <i>eggs</i></p>
-
-The return value is the added text object.
+Returns the text value of the HTML tag opening, complete with
+attributes. There is no "closing_tag" method, the module just prints
+"</$tag>" within the L</text> method.
 
 =head2 push
 
@@ -110,17 +155,29 @@ as a new C<HTML::Make> object. For example,
 
 [% example("table") %]
 
+C<push> takes all of the same arguments as L</new>, for example:
+
+[% hexample('link-example') %]
+
+=head3 Making a colourful list
+
 An object created with HTML::Make may also be pushed:
 
-[% example('push-new') %]
+[% hexample('push-new') %]
 
 See also L<Make a list of colours with
 HTML::Make|https://www.lemoda.net/perl/colour-list/index.html>.
 
-It's also possible to add all of the same arguments as L</new>, for
-example
+=head3 JSON to HTML
 
-    $element->push ('a', attr => {href => 'http://www.example.org/'});
+This script converts arbitrary JSON to HTML:
+
+[% hexample("json-to-html") %]
+
+See also L<Convert JSON to HTML with JSON::Parse and
+HTML::Make|https://www.lemoda.net/perl/json-to-html/index.html>.
+
+=head3 There are some ad-hoc guardrails
 
 This warns if you add some types of elements to possibly inappropriate
 parent elements. For example if you add an <li> tag to a <tr> it
@@ -128,29 +185,18 @@ reacts like this:
 
 [% example("push-li-to-tr") %]
 
-=head2 opening_tag
-
-    my $tag = $obj->opening_tag ();
-
-Returns the text value of the HTML tag opening, complete with
-attributes.
+I've never received a single bug report for this module, and so these
+warnings are mostly added in an ad-hoc fashion as I've found myself
+making various mistakes. If you find yourself tripping over some kind
+of error repeatedly, then feel free to ask me to add that to this
+module.
 
 =head2 text
 
     $element->text ();
 
-This returns the element and its child elements as text.
-
-=head2 multiply
-
-    my @elements = $obj->multiply ('li', \@contents);
-
-Given an HTML tag type as the first argument, and an array reference
-as the second argument, this adds multiple child elements to C<$obj>
-of type given by the first argument, with text contents given by
-C<\@contents>.
-
-[% example ("multiply") %]
+This returns the element and its child elements as text, so usually
+this is called at the final stage.
 
 =head1 OUTPUT FORMAT
 
@@ -170,25 +216,12 @@ New lines are added after block-level elements, according to L<HTML::Valid::Tags
 
 =back
 
-=head1 EXTENDED EXAMPLES
-
-=head2 JSON to HTML
-
-This script converts arbitrary JSON to HTML:
-
-[% example("json-to-html") %]
-
-See also L<Convert JSON to HTML with JSON::Parse and
-HTML::Make|https://www.lemoda.net/perl/json-to-html/index.html>.
-
 =head1 BUGS
 
 This module assumes you want to make HTML5.
 
-There is no way to control the whitespace in the output HTML.
-
-There is no way to add HTML comments to the output except by adding
-them as text.
+There is no way to control the whitespace in the output HTML such as
+indentation.
 
 =head1 DEPENDENCIES
 
@@ -208,6 +241,12 @@ L<HTML::Valid::Tagset> is used to validate tags and tag/attribute pairs.
 
 =head1 SEE ALSO
 
+=head2 CPAN modules
+
+These are the other modules I've found on CPAN (one is only on
+sourceforge) which generate HTML programmatically, rather than by
+template substitution.
+
 =over
 
 =item L<CGI>
@@ -215,9 +254,23 @@ L<HTML::Valid::Tagset> is used to validate tags and tag/attribute pairs.
 The CGI module contains HTML generation. See also
 L<CGI::HTML::Functions>.
 
+=item L<HTML::Builder>
+
+=item L<HTML::Declare>
+
+An HTML mini-language.
+
+=item L<HTML::FromArrayref>
+
+Output HTML described by a Perl data structure
+
 =item L<HTML::Generator|http://cleancode.sourceforge.net/api/perl/HTML/Generator.html>
 
 This project is on the SourceForge site, not CPAN.
+
+=item L<HTML::HTML5::Builder>
+
+"erect some scaffolding for your documents"
 
 =item L<HTML::Native>
 
@@ -236,20 +289,15 @@ An HTML-like templating language.
 This is similar to the HTML generation which is in L<CGI>. Its last
 update, version 1.05, was in 2009, and it doesn't include HTML5 tags.
 
-=item L<HTML::FromArrayref>
-
-Output HTML described by a Perl data structure
-
-=item L<HTML::Declare>
-
-An HTML mini-language.
-
 =item L<HTML::Untidy>
 
-=item L<HTML::Builder>
-
-=item L<HTML::HTML5::Builder>
-
 =back
+
+=head2 HTML validator
+
+My L<HTML validator is on
+github|https://github.com/benkasminbullock/html-validate>. This is in
+the Go language, not in Perl.
+
 
 [% INCLUDE "author" %]
