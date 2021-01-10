@@ -1,7 +1,7 @@
 package HTML::Make;
 use warnings;
 use strict;
-our $VERSION = '0.12';
+our $VERSION = '0.13';
 use Carp;
 use HTML::Valid::Tagset ':all';
 
@@ -53,6 +53,18 @@ sub new
         }
 	if ($options{attr}) {
 	    $obj->add_attr (%{$options{attr}});
+	}
+	# Convenience shortcuts
+	if ($options{id}) {
+	    $obj->add_attr (id => $options{id});
+	}
+	if ($options{class}) {
+	    $obj->add_attr (class => $options{class});
+	}
+	if ($options{href}) {
+	    if ($type ne 'a') {
+		carp "href is only allowed with an 'a' element";
+	    }
 	}
 	for my $k (keys %options) {
 	    if (! $validoptions{$k}) {
@@ -129,6 +141,20 @@ sub check_mismatched_tags
 	carp "Pushing <li> to a non-list parent <$ptype>";
 	return;
     }
+}
+
+sub add_class
+{
+    my ($obj, $class) = @_;
+    my $oldclass = $obj->{attr}{class};
+    my $newclass;
+    if ($oldclass) {
+	$newclass = $oldclass . ' ' . $class;
+    }
+    else {
+	$newclass = $class;
+    }
+    $obj->{attr}{class} = $newclass;
 }
 
 sub HTML::Make::push

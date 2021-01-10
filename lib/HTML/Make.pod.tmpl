@@ -32,6 +32,9 @@ produces output
 %]>|https://fastapi.metacpan.org/source/BKB/HTML-Make-[% info.version
 %]/examples/[% pl %]> in the distribution.)  
 [%- END -%]
+[%- MACRO since(what,version) BLOCK -%]
+🎲 This [% what %] was added in version [% version %].
+[%- END -%]
 [%- start_year=2012 -%]
 
 =encoding UTF-8
@@ -76,11 +79,21 @@ This also issues a warning if the attribute is not valid for the tag,
 according to L<HTML::Valid::Tagset/tag_attr_ok>. This is restricted to
 what is valid in HTML5.
 
+=head2 add_class
+
+As a special case of L</add_attr>, HTML::Make allows you to add to the
+class of the item with C<add_class>. This is added to the existing
+classes of the element rather than overwriting them.
+
+[% since('method','0.13') %]
+
 =head2 add_comment
 
     $element->add_comment ('This should be fixed!');
 
 Add an HTML comment to the element.
+
+[% since('method','0.12') %]
 
 =head2 add_text
 
@@ -138,6 +151,55 @@ the C<nocheck> option:
 
 [% example("nocheck") %]
 
+=head3 Allowed options
+
+The following options are allowed in C<new> and in L</push>:
+
+=over
+
+=item attr
+
+    my $item = HTML::Make->new ('li', attr => {style => "color: #FFD"});
+
+Any HTML tag attributes can be added as a hash reference.
+
+=item class
+
+    my $item = HTML::Make->new ('li', class => 'entry');
+
+This is equivalent to C<< attr => {class => $class} >>. It is allowed
+for any HTML element. See also L</add_class>.
+
+[% since('option','0.13') %]
+
+=item href
+
+    my $link = HTML::Make->new ('a', href => 'http://www.example.com');
+
+This is equivalent to C<< attr => {href => $url} >>. It is allowed
+only for C<a> elements.
+
+[% since('option','0.13') %]
+
+=item id
+
+    my $item = HTML::Make->new ('li', id => 'entry');
+
+This is equivalent to C<< attr => {id => $id} >>. It is allowed for
+any HTML element.
+
+[% since('option','0.13') %]
+
+=item text
+
+    my $link = HTML::Make->new ('a', href => $url, text => "My cool website");
+
+The text, the part between <a> and </a>.
+
+See also L</add_text>.
+
+=back
+
 =head2 opening_tag
 
     my $tag = $obj->opening_tag ();
@@ -154,6 +216,13 @@ Add child element of type <tag> to C<$element> and return the result
 as a new C<HTML::Make> object. For example,
 
 [% example("table") %]
+
+It is also possible to push one HTML::Make object into another one.
+
+    my $td = HTML::Make->new ('td');
+    $tr->push ($td);
+
+In this case, the return value is the initial element itself.
 
 C<push> takes all of the same arguments as L</new>, for example:
 
@@ -185,11 +254,11 @@ reacts like this:
 
 [% example("push-li-to-tr") %]
 
-I've never received a single bug report for this module, and so these
-warnings are mostly added in an ad-hoc fashion as I've found myself
-making various mistakes. If you find yourself tripping over some kind
-of error repeatedly, then feel free to ask me to add that to this
-module.
+We've never received a single bug report for this module, and so these
+warnings are mostly added in an ad-hoc fashion as we've found
+ourselves making various mistakes. If you find yourself tripping over
+some kind of error repeatedly, then feel free to ask us to add that to
+this module.
 
 =head2 text
 
@@ -223,6 +292,10 @@ This module assumes you want to make HTML5.
 There is no way to control the whitespace in the output HTML such as
 indentation.
 
+This module assumes lower case HTML tags (HTML tags are actually
+completely case insensitive, so <LI> or <A
+HREF='http://www.example.com'> and so on are all valid.)
+
 =head1 DEPENDENCIES
 
 This module depends on the following Perl modules.
@@ -243,7 +316,7 @@ L<HTML::Valid::Tagset> is used to validate tags and tag/attribute pairs.
 
 =head2 CPAN modules
 
-These are the other modules I've found on CPAN (one is only on
+These are the other modules we've found on CPAN (one is only on
 sourceforge) which generate HTML programmatically, rather than by
 template substitution.
 
@@ -298,6 +371,5 @@ update, version 1.05, was in 2009, and it doesn't include HTML5 tags.
 My L<HTML validator is on
 github|https://github.com/benkasminbullock/html-validate>. This is in
 the Go language, not in Perl.
-
 
 [% INCLUDE "author" %]
