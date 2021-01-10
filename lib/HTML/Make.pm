@@ -16,7 +16,7 @@ our $blanktype = 'blank';
 
 # This is for checking %options for stray stuff.
 
-my %validoptions = (qw/text 1 nocheck 1 attr 1/);
+my %validoptions = (qw/text 1 nocheck 1 attr 1 class 1 id 1 href 1/);
 
 sub new
 {
@@ -64,6 +64,9 @@ sub new
 	if ($options{href}) {
 	    if ($type ne 'a') {
 		carp "href is only allowed with an 'a' element";
+	    }
+	    else {
+		$obj->add_attr (href => $options{href});
 	    }
 	}
 	for my $k (keys %options) {

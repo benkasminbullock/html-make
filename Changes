@@ -1,7 +1,7 @@
 0.13 2021-01-10
 
-* New method "add_class" to add to the class of an element.
-* New options "id", "class" and "href".
+* New method "add_class" to add to the class of an element
+* New options "id", "class" and "href" for new and push
 
 0.12 2021-01-01
 
