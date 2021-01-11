@@ -115,6 +115,13 @@ The text may contain HTML elements:
 
 The return value is the added text object.
 
+=head2 children
+
+    my $children = $obj->children ();
+
+Returns an array reference, possibly empty, containing the child
+elements of C<$obj>, in the order they were added to $obj.
+
 =head2 multiply
 
     my @elements = $obj->multiply ('li', \@contents);

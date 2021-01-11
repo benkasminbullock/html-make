@@ -1,7 +1,7 @@
 package HTML::Make;
 use warnings;
 use strict;
-our $VERSION = '0.13';
+our $VERSION = '0.14';
 use Carp;
 use HTML::Valid::Tagset ':all';
 
@@ -110,6 +110,20 @@ sub add_attr
     }
 }
 
+sub add_class
+{
+    my ($obj, $class) = @_;
+    my $oldclass = $obj->{attr}{class};
+    my $newclass;
+    if ($oldclass) {
+	$newclass = $oldclass . ' ' . $class;
+    }
+    else {
+	$newclass = $class;
+    }
+    $obj->{attr}{class} = $newclass;
+}
+
 sub add_text
 {
     my ($obj, $text) = @_;
@@ -124,6 +138,19 @@ sub add_comment
     my $x = __PACKAGE__->new ($texttype, text => "<!-- $comment -->");
     CORE::push @{$obj->{children}}, $x;
     return $x;
+}
+
+sub attr
+{
+    my ($obj) = @_;
+    my $attr = $obj->{attr};
+    if (! $attr) {
+	return {};
+    }
+    # Copy the hash so that the caller does not accidentally alter
+    # this object's internals
+    my %attr = %$attr;
+    return \%attr;
 }
 
 sub check_mismatched_tags
@@ -146,33 +173,34 @@ sub check_mismatched_tags
     }
 }
 
-sub add_class
+sub children
 {
-    my ($obj, $class) = @_;
-    my $oldclass = $obj->{attr}{class};
-    my $newclass;
-    if ($oldclass) {
-	$newclass = $oldclass . ' ' . $class;
+    my ($obj) = @_;
+    if (! $obj->{children}) {
+	return [];
     }
-    else {
-	$newclass = $class;
-    }
-    $obj->{attr}{class} = $newclass;
+    my @children = @{$obj->{children}};
+    return \@children;
 }
 
-sub HTML::Make::push
+sub multiply
 {
-    my ($obj, $el, %options) = @_;
-    my $x;
-    if (ref $el eq __PACKAGE__) {
-	$x = $el;
+    my ($parent, $element, $contents) = @_;
+    my @elements;
+    if (! defined $element) {
+        croak "No element given";
     }
-    else {
-	check_mismatched_tags ($obj, $el);
-	$x = __PACKAGE__->new ($el, %options);
+    if (! defined $contents || ref $contents ne 'ARRAY') {
+        croak 'contents not array or not defined';
     }
-    CORE::push @{$obj->{children}}, $x;
-    return $x;
+    for my $content (@$contents) {
+        my $x = $parent->push ($element, text => $content);
+        CORE::push @elements, $x;
+    }
+    if (@elements != @$contents) {
+	die "Mismatch of number of elements";
+    }
+    return @elements;
 }
 
 sub opening_tag
@@ -192,6 +220,25 @@ sub opening_tag
     }
     $text .= ">";
     return $text;
+}
+
+sub HTML::Make::push
+{
+    my ($obj, $el, %options) = @_;
+    my $x;
+    if (ref $el eq __PACKAGE__) {
+	$x = $el;
+	if ($x->{parent}) {
+	    carp "Pushed element of type $x->{type} already has a parent of type $x->{parent}{type}";
+	}
+    }
+    else {
+	check_mismatched_tags ($obj, $el);
+	$x = __PACKAGE__->new ($el, %options);
+    }
+    CORE::push @{$obj->{children}}, $x;
+    $x->{parent} = $obj;
+    return $x;
 }
 
 sub text
@@ -223,24 +270,14 @@ sub text
     return $text;
 }
 
-sub multiply
+sub type
 {
-    my ($parent, $element, $contents) = @_;
-    my @elements;
-    if (! defined $element) {
-        croak "No element given";
+    my ($obj) = @_;
+    my $type = $obj->{type};
+    if ($type eq $blanktype) {
+	return undef;
     }
-    if (! defined $contents || ref $contents ne 'ARRAY') {
-        croak 'contents not array or not defined';
-    }
-    for my $content (@$contents) {
-        my $x = $parent->push ($element, text => $content);
-        CORE::push @elements, $x;
-    }
-    if (@elements != @$contents) {
-	die "Mismatch of number of elements";
-    }
-    return @elements;
+    return $type;
 }
 
 1;

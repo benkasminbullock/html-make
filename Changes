@@ -1,3 +1,7 @@
+0.14 2021-01-11
+
+* New methods "attr", "children" and "type" to inspect an element.
+
 0.13 2021-01-10
 
 * New method "add_class" to add to the class of an element
