@@ -12,6 +12,7 @@ before_install:
   - cpanm Template
   - cpanm Test::Pod
   - cpanm HTML::Valid
+  - git clone https://github.com/benkasminbullock/bkb-perl-build.git copied
   - perl build.pl
 perl:
 # Some versions don't seem to be available.
