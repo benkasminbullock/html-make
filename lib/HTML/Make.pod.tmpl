@@ -281,6 +281,9 @@ this module.
 This returns the element and its child elements as text, so usually
 this is called at the final stage.
 
+If C<$element>'s type is C<html>, a doctype declaration of the form
+C<< <!DOCTYPE html> >> is added before the opening tag.
+
 =head1 OUTPUT FORMAT
 
 This section discusses the way that HTML is output by the module.
