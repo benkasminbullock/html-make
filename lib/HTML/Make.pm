@@ -206,7 +206,11 @@ sub multiply
 sub opening_tag
 {
     my ($obj) = @_;
-    my $text = "<$obj->{type}";
+    my $text = '';
+    if ($obj->{type} eq 'html') {
+	$text .= "<!DOCTYPE html>\n";
+    }
+    $text .= "<$obj->{type}";
     if ($obj->{attr}) {
 	my @attr;
 	my %attr = %{$obj->{attr}};
