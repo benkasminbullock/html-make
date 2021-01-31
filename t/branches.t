@@ -55,8 +55,22 @@ ok ($@, "Error adding undefined text");
     $table->push ('td');
     ok ($warnings, "Got warnings pushing <td> to <ul> parent");
     $warnings = undef;
-    
+
+    my $p2 = HTML::Make->new ('p');
+    my $p3 = HTML::Make->new ('p');
+    my $span = HTML::Make->new ('span');
+    $p2->push ($span);
+    $p3->push ($span);
+    ok ($warnings, "Got warnings pushing <span> to two different paragraphs");
+    like ($warnings, qr!already has a parent!, "Got right warnings");
 }
+
+my $ul = HTML::Make->new ('ul');
+
+eval {
+    $ul->multiply (undef, [qw!a b c!]);
+};
+ok ($@, "Error from undefined element");
 
 my $pid = HTML::Make->new ('p', id => 'paragraph');
 like ($pid->text (), qr!<p.*id="paragraph">!, "Got id attribute");

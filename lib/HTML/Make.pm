@@ -264,6 +264,7 @@ sub HTML::Make::push
 	$x = $el;
 	if ($x->{parent}) {
 	    carp "Pushed element of type $x->{type} already has a parent of type $x->{parent}{type}";
+	    return;
 	}
     }
     else {
