@@ -81,9 +81,13 @@ what is valid in HTML5.
 
 =head2 add_class
 
+     $element->add_class ('help');
+
 As a special case of L</add_attr>, HTML::Make allows you to add to the
 class of the item with C<add_class>. This is added to the existing
 classes of the element rather than overwriting them.
+
+[% example("add-class") %]
 
 [% since('method','0.13') %]
 
@@ -91,7 +95,9 @@ classes of the element rather than overwriting them.
 
     $element->add_comment ('This should be fixed!');
 
-Add an HTML comment to the element.
+Add an HTML comment to the element's children.
+
+[% example("add-comment") %]
 
 [% since('method','0.12') %]
 
@@ -101,26 +107,27 @@ Add an HTML comment to the element.
 
 Add text to C<$element>. For example,
 
-    my $element = HTML::Make->new ('p');
-    $element->add_text ('peanuts');
-    print $element->text ();
-    # <p>peanuts</p>
+[% example("add-text") %]
 
 The text may contain HTML elements:
 
-    my $element = HTML::Make->new ('p');
-    $element->add_text ('peanuts <i>eggs</i>');
-    print $element->text ();
-    # <p>peanuts <i>eggs</i></p>
+[% example("add-text-html") %]
 
 The return value is the added text object.
+
+HTML::Make does not do any escaping or other alteration of the user's
+text whatsoever.
 
 =head2 attr
 
     my $attr = $element->attr ();
 
 This returns a hash reference, possibly empty, containing the
-attributes of C<$element>.
+attributes of C<$element>. This is a copy of the attributes of
+C<$element> so it can be altered without altering the attributes of
+C<$element>.
+
+[% example("attr") %]
 
 =head2 children
 
@@ -298,7 +305,8 @@ The output HTML is not indented.
 
 =item New lines
 
-New lines are added after block-level elements, according to L<HTML::Valid::Tagset/%isBlock>, and after <tr> elements.
+New lines are added after block-level elements, according to
+L<HTML::Valid::Tagset/%isBlock>, and after <tr> elements.
 
 =back
 
@@ -336,6 +344,24 @@ attributes.
 
 =head1 SEE ALSO
 
+[% PROCESS 'cpm.pod' %]
+
+=head2 HTML::Make family
+
+These are modules based on HTML::Make.
+
+=over
+
+[% cpm("HTML::Make::Calendar") %]
+
+Make a calendar in HTML format.
+
+[% cpm("HTML::Make::Page") %]
+
+Make the HTML C<< <head> >> element using Perl.
+
+=back
+
 =head2 CPAN modules
 
 These are the other modules we've found on CPAN (one is only on
@@ -344,47 +370,61 @@ template substitution.
 
 =over
 
-=item L<CGI>
+[% cpm("CGI") %]
 
 The CGI module contains HTML generation. See also
 L<CGI::HTML::Functions>.
 
-=item L<HTML::Builder>
+[% cpm("HTML::Builder") %]
 
-=item L<HTML::Declare>
+[% cpm("HTML::DataTable") %]
+
+"Print HTML tables from Perl data"
+
+[% cpm("HTML::Declare") %]
 
 An HTML mini-language.
 
-=item L<HTML::FromArrayref>
+[% cpm("HTML::FromArrayref") %]
 
 Output HTML described by a Perl data structure
 
-=item L<HTML::Generator|http://cleancode.sourceforge.net/api/perl/HTML/Generator.html>
+L<HTML::Generator|http://cleancode.sourceforge.net/api/perl/HTML/Generator.html>
 
 This project is on the SourceForge site, not CPAN.
 
-=item L<HTML::HTML5::Builder>
+[% cpm("HTML::HTML5::Builder") %]
 
 "erect some scaffolding for your documents"
 
-=item L<HTML::Native>
+[% cpm("HTML::Native") %]
 
-Generate and manipulate HTML as native Perl data structures
+"Generate and manipulate HTML as native Perl data structures"
 
-=item L<HTML::TagTree>
+You give this list references containing your HTML structures, and it
+converts them into HTML text.
+
+[% cpm("HTML::TagTree") %]
 
 An HTML generator via a tree of 'tag' objects
 
-=item L<HTML::Template>
+[% cpm("HTML::Template") %]
 
 An HTML-like templating language.
 
-=item L<HTML::Tiny>
+[% cpm("HTML::Tiny") %]
 
 This is similar to the HTML generation which is in L<CGI>. Its last
-update, version 1.05, was in 2009, and it doesn't include HTML5 tags.
+update, version 1.05, was in 2009, and so it doesn't include HTML5
+tags.
 
-=item L<HTML::Untidy>
+[% cpm("HTML::Tree") %]
+
+This doesn't have any proper documentation so we're not sure what it
+does, but it is linked from L</HTML::Native> as an alternative to
+that.
+
+[% cpm("HTML::Untidy") %]
 
 =back
 

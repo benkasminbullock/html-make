@@ -39,6 +39,7 @@ my %vars;
 
 $vars{info} = $info;
 $vars{commit} = $commit;
+$vars{mod2info} = mod2info ("$Bin/see-also-info.json");
 
 my $tt = Template->new (
     ABSOLUTE => 1,

@@ -258,6 +258,10 @@ sub opening_tag
 
 sub HTML::Make::push
 {
+    if (scalar (@_) % 2 != 0) {
+	carp "Usage: ->push ('el', class => 'a', );";
+	return;
+    }
     my ($obj, $el, %options) = @_;
     my $x;
     if (ref $el eq __PACKAGE__) {
