@@ -20,6 +20,10 @@ my %isBlock = %HTML::Valid::Tagset::isBlock;
 our $texttype = 'text';
 our $blanktype = 'blank';
 
+sub op
+{
+}
+
 sub new
 {
     my ($class, $type, %options) = @_;
@@ -59,7 +63,11 @@ sub new
 	    }
 	}
     }
-    if ($options{text}) {
+    if (exists $options{text}) {
+	if (! defined $options{text}) {
+	    carp "Undefined value for text";
+	    $options{text} = '';
+	}
 	$obj->add_text ($options{text});
 	delete $options{text};
     }

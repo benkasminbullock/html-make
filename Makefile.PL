@@ -21,6 +21,11 @@ WriteMakefile (
             repository => $repo,
             bugtracker => "$repo/issues",
         },
+	no_index => {
+	    file => [
+		"t/HMT.pm",
+	    ],
+	}
     },
     MIN_PERL_VERSION => '5.006001',
 );
