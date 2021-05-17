@@ -93,6 +93,15 @@ sub new
 	}
 	delete $options{href};
     }
+    if ($options{src}) {
+	if ($type ne 'img' && $type ne 'image') {
+	    carp "src is only allowed with an 'img' element";
+	}
+	else {
+	    $obj->add_attr (src => $options{src});
+	}
+	delete $options{src};
+    }
     for my $k (keys %options) {
 	carp "Unknown option '$k'";
 	delete $options{$k};
