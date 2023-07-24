@@ -1,10 +1,11 @@
 package HTML::Make;
 use warnings;
 use strict;
-our $VERSION = '0.15';
+require Exporter;
+our $VERSION = '0.16';
 use Carp;
 use HTML::Valid::Tagset ':all';
-use JSON::Parse '0.60', 'read_json';
+use JSON::Parse '0.62', 'read_json';
 
 my $dir = __FILE__;
 $dir =~ s/Make\.pm/Make/;
