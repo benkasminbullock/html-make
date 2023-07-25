@@ -2,7 +2,7 @@ package HTML::Make;
 use warnings;
 use strict;
 require Exporter;
-our $VERSION = '0.16';
+our $VERSION = '0.17';
 use Carp;
 use HTML::Valid::Tagset ':all';
 use JSON::Parse '0.62', 'read_json';

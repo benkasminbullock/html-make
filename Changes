@@ -1,3 +1,7 @@
+0.17 2023-07-25
+
+* Inconsistent versions of dependencies fixed
+
 0.16 2023-07-24
 
 * Add "use Exporter;" line so that an import method exists
