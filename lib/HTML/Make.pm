@@ -85,7 +85,11 @@ sub new
 	$obj->add_attr (class => $options{class});
 	delete $options{class};
     }
-    if ($options{href}) {
+    if (exists $options{href}) {
+	if (! defined $options{href}) {
+	    carp "Undefined value for href";
+	    $options{href} = '';
+	}
 	if ($type ne 'a' && $type ne 'link') {
 	    carp "href is only allowed with an 'a' or 'link' element";
 	}
